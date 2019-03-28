@@ -1,0 +1,11 @@
+\begin{abstract}
+Asymmetric multicore processors (AMP) are necessary for extracting performance in an era of limited power budget and dark silicon. Despite becoming increasingly prevalent, our software fails to use them efficiently. OS schedulers, in particular, handle asymmetry only under restricted scenarios, if at all. We have efficient symmetric schedulers, efficient asymmetric schedulers for single-threaded workloads, and efficient asymmetric schedulers for single program workloads. What we do not have is a scheduler that can handle all three factors affecting AMP scheduling: core affinity, thread criticality, and scheduling fairness.
+
+To address this problem, this paper introduces the first general purpose asymmetry-aware scheduler targeting multi-threaded multi-programmed workloads. It estimates the performance of each thread on each type of core and it identifies communication patterns and bottleneck threads. With this information, the scheduler makes coordinated core assignment and thread selection decisions that still provide each application its fair share of the processor's time.
+     
+We evaluated our scheduler on GEM5 using an ARM big.LITTLE architecture and multi-thread multi-program workloads, mixing benchmarks from PARSEC, SPLASH2, and SPEC2006. Compared against the Linux CFS scheduler and a state-of-the-art AMP-aware scheduler, our experimental results show up to 51\% performance gain, or 5\% to 27\% on average depending on the hardware setup.
+\end{abstract}
+
+
+%To address this issue we come up with a multi-factor decentralized framework with core allocator and thread selector collaboration. 
+%Instead of a mix-model to direct the whole scheduler, it divides multiple runtime issues to be solved in different functional units which make collaborated decisions to targeting multi-thread multiprogram workloads.
