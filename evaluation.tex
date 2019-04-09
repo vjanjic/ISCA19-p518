@@ -3,127 +3,134 @@
 
 \subsection{Experimental Setup}
 
- \begin{table*}
-  \caption{Benchmarks Characteristics \cite{bienia08characterizationreport}\cite{woo1995splash}\cite{southern2016analysis}}
+% \begin{table*}
+%  \caption{Benchmarks Characteristics %\cite{bienia08characterizationreport}\cite{woo1995splash}\cite{southern2016analysis}}
+%  \center
+%  \label{BC}
+%   \scalebox{1}{
+%   \begin{tabular}{ p{3cm} | p{3cm} | p{3cm} | p{3cm} | p{3cm} }
+%     \toprule[1pt]
+%     Name & Type of Parallelism & Synchronization Rate & Comm/Comp Ratio & Number Threads \footnote{$n$ is the input parameter.} \\
+%     \toprule[1pt]
+ %   blackscholes & data-parallel & low & high & 1 + n \\
+  %  bodytrack & data-parallel & medium & high & 2 + n\\
+  %  dedup & pipline & medium & high & 3 + 3n\\
+  %  ferret & pipline & high & medium & 3 + 4n\\
+  %  fluidanimate & data-parallel & very high & low & 1 + n\\
+  %  freqmine & data-parallel & high & high & n\\
+  %  swaptions & data-parallel & low & low & 1 + n\\
+  %  radix & data-parallel & low & high & n\\
+  %  lu\_ncb & data-parallel& low & low & n \\
+  %  lu\_cb & data-parallel& low & low & n\\
+  %  ocean\_cp & data-parallel & low & low & n\\
+  %  water\_nsquared & data-parallel& medium & medium & n\\
+  %  water\_spatial & data-parallel& low & low & n\\
+  %  fmm & data-parallel& medium & low & n\\
+  %  fft & data-parallel& low & high & n\\
+   %   \midrule
+%     \bottomrule
+%  \end{tabular}}
+%\end{table*}
+
+ \begin{table}[htbp]
+  \caption{Benchmarks Characteristics \cite{bienia08characterization}\cite{woo1995splash}\cite{southern2016analysis}}
   \center
   \label{BC}
    \scalebox{1}{
-   \begin{tabular}{ p{3cm} | p{3cm} | p{3cm} | p{3cm} | p{3cm} }
-     \toprule[1pt]
-     Name & Type of Parallelism & Synchronization Rate & Comm/Comp Ratio & Number Threads \footnote{$n$ is the input parameter.} \\
-     \toprule[1pt]
-    blackscholes & data-parallel & low & high & 1 + n \\
-    bodytrack & data-parallel & medium & high & 2 + n\\
-    dedup & pipline & medium & high & 3 + 3n\\
-    ferret & pipline & high & medium & 3 + 4n\\
-    fluidanimate & data-parallel & very high & low & 1 + n\\
-   % freqmine & data-parallel & high & high &4\\
-    swaptions & data-parallel & low & low & 1 + n\\
-    radix & data-parallel & low & high & n\\
-    lu\_ncb & data-parallel& low & low & n \\
-    lu\_cb & data-parallel& low & low & n\\
-    ocean\_cp & data-parallel & low & low & n\\
-    water\_nsquared & data-parallel& medium & medium & n\\
-    water\_spatial & data-parallel& low & low & n\\
-    fmm & data-parallel& medium & low & n\\
-    fft & data-parallel& low & high & n\\
-      \midrule
-     \bottomrule
+   \begin{tabular}{ p{2.3cm} |  p{1.8cm} | p{1.8cm} | p{1.4cm} }
+     \hline
+     Name & Sync. Rate & Comm/Comp Ratio & No. Threads\\
+    \hline
+    blackscholes &  low & high & 1 + n \\
+    bodytrack &  medium & high & 2 + n\\
+    dedup &  medium & high & 3 + 3n\\
+    ferret &  high & medium & 3 + 4n\\
+    fluidanimate &  very high & low & 1 + n\\
+    freqmine &  high & high & n\\
+    swaptions &  low & low & 1 + n\\
+    radix &  low & high & n\\
+    lu\_ncb & low & low & n \\
+    lu\_cb &  low & low & n\\
+    ocean\_cp &  low & low & n\\
+    water\_nsquared &  medium & medium & n\\
+    water\_spatial &  low & low & n\\
+    fmm &  medium & low & n\\
+    fft &  low & high & n\\
+    \hline
+    % \bottomrule
   \end{tabular}}
-\end{table*}
+\end{table}
+
+\textbf{\textit{Experimental Environment:}} We ran our experiments on GEM5, simulating an ARM big.LITTLE-like architecture. The big cores are similar to out-of-order 2 GHz CortexA57 cores, with a 49 KB L1 instruction cache, a 32 KB L1 data cache, and a 2 MB L2 cache. The little cores are similar to in-order 1.2 GHz CortexA53 ones, with a 32 KB L1 instruction cache, a 32 KB L1 data cache, and a 0.5 MB L2 cache. We evaluated three distinct hardware configurations, including two symmetric configurations - one with two big and two little cores (2B2S) and one with four big and four little ones (4B4S), and two asymmetric configurations - one with two big and four little cores (2B4S) and one with four big cores and two little cores (4B2S). The OS is Linux v3.16. We cross-compiled the kernel with gcc v5.4.0, while we compiled the benchmarks inside the emulated environment with gcc v4.8.2.
 
  \begin{table*}
-  \caption{Benchmarks Compositions New}
+  \caption{Multi-programmed Workloads Compositions}
   \center
-  \label{BCN}
+  \label{WC}
    \scalebox{1}{
    \begin{tabular}{ p{2cm} | p{7cm} | p{4cm} | p{2cm} }
-     \toprule[1pt]
+    \hline
      \multicolumn{4}{c}{Synchronization-intensive VS Non-synchronization-intensive Workloads}\\
-     \midrule
+    \hline
      Index & Workload Composition & Synchronizations & Threads \\
-     \toprule[1pt]
+    \hline
     Sync - 1 & water\_nsquared - fmm & intensive & 4 \\
     Sync - 2 & dedup - fluidanimate & intensive & 18 \\
     Sync - 3 & water\_nsquared - fmm - fluidanimate - bodytrack & intensive & 9 \\
     Sync - 4 & dedup - ferret - fmm - water\_nsquared & intensive & 20\\
-      \midrule
-    NSync - 1 & radix - fft & non-intensive & 4 \\
+    \hline
+    NSync - 1 & water\_spatial - lu\_cb & non-intensive & 4 \\
     NSync - 2 & blackscholes - swaptions & non-intensive & 16 \\
     NSync - 3 & radix - fft - water\_spatial - lu\_cb & non-intensive & 8\\
-    NSync - 4 & blackscholes - ocean\_cp - lu\_cb - swaptions & non-intensive & 20\\
-   %  \bottomrule
-      \toprule[1pt]
+    NSync - 4 & blackscholes - ocean\_cp - lu\_ncb - swaptions & non-intensive & 20\\
+     \hline
      \multicolumn{4}{c}{Communication-intensive VS Computation-intensive Workloads}\\
-     \midrule
+     \hline
      Index & Workload Composition & Comm/Comp & Threads \\
-     \toprule[1pt]
-    Comm - 1 & water\_nsquared - fft & Communication-intensive & 4 \\
-    Comm - 2 & radix - blackscholes &  Communication-intensive & 16 \\
-    Comm - 3 & water\_nsquared - fft - radix - blackscholes &  Communication-intensive & 8 \\
-    Comm - 4 & bodytrack - dedup - ferret - fft &  Communication-intensive & 20\\
-      \midrule
+    \hline
+    Comm - 1 & water\_nsquared - blackscholes & Communication-intensive & 4 \\
+    Comm - 2 & ferret - dedup &  Communication-intensive & 16 \\
+    Comm - 3 & water\_nsquared - fft - radix - bodytrack &  Communication-intensive & 9 \\
+    Comm - 4 & blackscholes - dedup - ferret - water\_nsquared &  Communication-intensive & 20\\
+    \hline
     Comp - 1 & water\_spatial - fmm & Computation-intensive & 4 \\
-    Comp - 2 & fluidanimate - swaptions & Computation-intensive & 16 \\
+    Comp - 2 & fluidanimate - swaptions & Computation-intensive & 17 \\
     Comp - 3 & lu\_ncb - fmm - water\_spatial - lu\_cb & Computation-intensive & 8\\
-    Comp - 4 & fluidanimate - ocean\_cp - lu\_cb - swaptions & Computation-intensive & 20\\
-     \bottomrule
-     
+    Comp - 4 & fluidanimate - ocean\_cp - lu\_ncb - swaptions & Computation-intensive & 20\\
+    \hline
+  \end{tabular}}
+  \scalebox{0.9}{
+  \begin{tabular}{p{1.5cm} |p{4cm} |p{1cm}|| p{1.5cm} |p{7cm} |p{1cm}}
+   \hline 
+     \multicolumn{6}{c}{Random-mixed Multi-programmed Workloads}\\
+  \hline
+      Index & Workload Composition & Threads & Index & Workload Composition & Threads\\
+   \hline
+    Rand - 1 &lu\_cb - dedup & 19& Rand - 6 &water\_spatial - fmm - fft - fluidanimate &21\\
+    Rand - 2 &lu\_ncb - bodytrack &10& Rand - 7 &fmm - water\_spatial - ferret - swaptions&20\\
+    Rand - 3 &ferret - water\_spatial&9 & Rand - 8 &water\_spatial - water\_nsquared - ferret - freqmine&17\\
+    Rand - 4 &ocean\_cp - fft&8 & Rand - 9 &blackscholes - bodytrack - dedup - fluidanimate&55\\
+    Rand - 5 &freqmine - water\_nsquared&6 & Rand - 10 &lu\_cb - lu\_ncb - bodytrack - dedup&53\\
+   \hline
   \end{tabular}}
 \end{table*}
 
- \begin{table*}
-  \caption{Workloads Compositions}
-  \center
-  \label{WC}
-   \scalebox{0.9}{
-   \begin{tabular}{p{1.5cm} |p{5.5cm} || p{1.5cm} |p{9cm} }
-     \toprule[1pt]
-     \multicolumn{4}{c}{Random-mixed Workloads from PARSEC3.0 and SPLASH-2}\\
-     \toprule[1pt] 
-    2B-1 &blackshcoles - radix &4B-1 &blackshcoles - bodytrack - radix - lu\_ncb\\
-    2B-2 &fft - swaptions &4B-2 &water\_spatial - fmm - fft - fluidanimate\\
-    2B-3 &lu\_cb - dedup  &4B-3 &lu\_cb - water\_nsquared - fmm - freqmine\\
-    2B-4 &lu\_ncb - bodytrack &4B-4 &lu\_cb - lu\_ncb - bodytrack - dedup\\
-    2B-5 &ferret - fluidanimate &4B-5 &radix - lu\_ncb - lu\_cb - fft\\
-    2B-6 &freqmine - water\_nsquared &4B-6 &blackscholes - bodytrack - dedup - fluidanimate\\
-    2B-7 &ocean\_cp - fft &4B-7 &radix - ocean\_cp - blackscholes - swaptions\\
-    2B-8 &ferret - water\_spatial &4B-8 &water\_spatial - water\_nsquared - ferret - freqmine\\
-    2B-9 &fluidanmiate - fmm &4B-9 &fmm - water\_spatial - ferret - swaptions\\
-    2B-10 &fmm - water\_spatial &4B-10 &ocean\_cp - fft - fluidanimate - swaptions\\
-  %  6B-M &blackshcoles,bodytrack,dedup,radix,lu\_ncb,lu\_cb\\
-  %  8B-M &blackshcoles,bodytrack,dedup,fluidanmiate,radix,lu\_ncb,lu\_cb,radiosity\\
-  %  12B-M &blackshcoles,bodytrack,dedup,fluidanmiate,streamcluster,swaptions,radix,lu\_ncb,lu\_cb,radiosity,ocean\_cp,fft\\    
-     \midrule
- %    \toprule[1pt]
- %    \multicolumn{4}{c}{Multi/Single-thread multiprogrammed Workloads from PARSEC3.0, SPLASH-2 and SPEC2006}\\
- %    \toprule[1pt]  
- %   3B-1 &blackshcoles - radix - mcf &6B-1 &blackshcoles - bodytrack - radix - lu\_ncb - mcf - bzip2\\
-  %  3B-2 &fft - swaptions - mcf &6B-2 &fft - radix - blackscholes - fluidanimate - mcf - bzip2\\
-   % 3B-3 &freqmine - swaptions - mcf &6B-3 &blackscholes - dedup - freqmine - swaptions - mcf - bzip2\\
-%    3B-4 &blackscholes - freqmine - bzip2 &6B-4 &lu\_cb - lu\_ncb - bodytrack - dedup - mcf - bzip2\\
-    %3B-5 &ocean\_cp - fluidanimate - mcf &6B-5 &radix - lu\_ncb - lu\_cb - fft - mcf - bzip2\\
- %   3B-5 &radix - lu\_ncb - bzip2 &6B-5 &radix - lu\_ncb - lu\_cb - fft - mcf - bzip2\\
-  %  3B-6 &fluidanimate - freqmine - bzip2 &6B-6 &blackscholes - freqmine - swaptions - fluidanimate - mcf - bzip2\\
-   % 3B-7 &blackscholes - fluidanimate - bzip2 &6B-7 &lu\_ncb - ocean\_cp - bodytrack - swaptions - mcf - bzip2\\
-%    3B-8 &dedup - fluidanimate - bzip2 &6B-8 &lu\_cb - ocean\_cp - dedup - swaptions - mcf - bzip2\\
- %   3B-9 &lu\_cb - swaptions - bzip2 &6B-9 &ocean\_cp - fft - fluidanimate - swaptions - mcf - bzip2\\
- %   7B-MS   &blackshcoles,bodytrack,dedup,radix,lu\_ncb,lu\_cb,mcf\\
- %   11B-MS &blackshcoles,bodytrack,dedup,canneal,swaptions,radix,lu\_ncb,lu\_cb,radiosity, bzip2,mcf\\ 
-  %  15B-MS &blackshcoles,bodytrack,dedup,fluidanmiate,streamcluster,canneal,swaptions,radix,lu\_ncb,lu\_cb,radiosity, ocean\_cp,fft,bzip2,mcf\\   
-  % &6B-7 &radix - ocean\_cp - blackscholes - swaptions - mcf - bzip2\\
-    \bottomrule
-  \end{tabular}}
-\end{table*}
-
-\textbf{\textit{Experimental Environment:}} We ran our experiments on GEM5, simulating an ARM big.LITTLE-like architecture. The big cores are similar to out-of-order 2 GHz CortexA57 cores, with a 49 KB L1 instruction cache, a 32 KB L1 data cache, and a 2 MB L2 cache. The little cores are similar to in-order 1.2 GHz CortexA53 ones, with a 32 KB L1 instruction cache, a 32 KB L1 data cache, and a 0.5 MB L2 cache. We evaluated two distinct hardware configurations, one with two big and two little cores and one with four big and four little ones. The OS is Linux v3.16. We cross-compiled the kernel with gcc v5.4.0, while we compiled the benchmarks inside the emulated environment with gcc v4.8.2.
-
-\textbf{\textit{Workloads:}} For our workloads we used 17 different benchmarks. Fifteen are multi-threaded pulled either from PARSEC3.0~\cite{bienia11benchmarking} ({\it blackscholes, bodytrack, dedup, swaptions, freqmine, ferret and fluidanmiate}) or from SPLASH2~\cite{woo1995splash} ({\it radix, lu\_ncb, lu\_cb, ocean\_cp, water\_nsquared, water\_spatial, fmm and fft}). We added another two single-threaded benchmarks ({\it mcf, bzip2}) from SPEC CPU2006~\cite{henning2006spec} to complicate scheduling decisions. All benchmarks use pthread-based parallelism apart from \emph{freqmine} which does not support pthreads, only OpenMP. To keep the simulation time reasonably short, we use the \emph{simsmall} inputs for the multi-threaded benchmarks.
-
-For \emph{mcf} we use the reference input, while for \textit{bzip2} we used the source reference input. We edited the source files of \textit{mcf} and \textit{bzip2} to limit the number of iterations of their outermost loops to 3000 for the former and 250 for the latter, to keep their runtimes in the same order of magnitude as the multi-threaded benchmarks.
-
+\textbf{\textit{Workloads:}} For our workloads we used 15 different benchmarks. They are pulled either from PARSEC3.0~\cite{bienia11benchmarking} ({\it blackscholes, bodytrack, dedup, swaptions, freqmine, ferret and fluidanmiate}) or from SPLASH2~\cite{woo1995splash} ({\it radix, lu\_ncb, lu\_cb, ocean\_cp, water\_nsquared, water\_spatial, fmm and fft}). 
+\footnote{It is a common issue that the applied version of GEM5 simulator does not fully support all PARSEC3.0 benchmarks on ARM and previous gem5-based research use a selection of PARSEC3.0 benchmarks for evaluation~\cite{endo2014micro,gallego2016dram,van2013full} and IO-redirection issues prevent us applying more SPLASH2 benchmarks with additional input files to keep same order of magnitude in our ARM disk image for simulation.}
+%We added another two single-threaded benchmarks ({\it mcf, bzip2}) from SPEC CPU2006~\cite{henning2006spec} to complicate scheduling decisions. 
+All benchmarks use pthread-based parallelism apart from \emph{freqmine} which does not support pthreads, only OpenMP. To keep the simulation time reasonably short, we use the \emph{simsmall} inputs for the multi-threaded benchmarks.
+%For \emph{mcf} we use the reference input, while for \textit{bzip2} we used the source reference input. We edited the source files of \textit{mcf} and \textit{bzip2} to limit the number of iterations of their outermost loops to 3000 for the former and 250 for the latter, to keep their runtimes in the same order of magnitude as the multi-threaded benchmarks.
 %It is a common issue that GEM5 simulator does not support all PARSEC3.0 benchmarks well \cite{endo2014micro}, so we also applied several more SPLASH2 benchmarks \cite{woo1995splash}: {\it radix, lu\_ncb, lu\_cb, ocean\_cp and fft}. We also considered two more single-thread benchmarks ({\it mcf, bzip2}) from SPEC2006 \cite{henning2006spec} to make the tested multiprogrammed workloads further complicated. 
-We randomly mix our selected benchmarks to build workloads with either multiple multi-threaded applications or mixed multiple multi-threaded and single-thread applications. Table~\ref{WC} shows the workloads we used. For all workloads, we boot the simulated system, start the benchmarks, and wait until they reach the end of their initialization. This is done with fast simulation. When all benchmarks are initialized, we switch to cycle accurate simulation and resume the execution of the benchmarks. We only collect statistics for the cycle accurate part of the simulation.
+
+The benchmarks characteristics are shown in Table~\ref{BC}. Where $n$ in the number of threads denotes the input parameter of the PARSEC3.0 benchmarks~\cite{southern2016analysis}. Runtime synchronizations of PARSEC3.0 and SPLASH2 bechnmarks are cased by barriers, locks, conditions and pauses~\cite{bienia2008parsec,woo1995splash}. We group the benchmarks into two classes for structural comparison:
+\begin{itemize}
+    \item Synchronization intensive or not.
+    \item Communication or computation intensive.
+\end{itemize}
+
+For each classes, we further generate workloads to be different on both number of applications and number of total threads. Beyond that, we also randomly mix our selected benchmarks to build additional multi-threaded multi-programmed workloads with random number of total application threads.
+%We randomly mix our selected benchmarks to build workloads with either multiple multi-threaded applications or mixed multiple multi-threaded and single-thread applications. 
+Table~\ref{WC} shows the workloads we used. For all workloads, we boot the simulated system, start the benchmarks, and wait until they reach the end of their initialization. This is done with fast simulation. When all benchmarks are initialized, we switch to cycle accurate simulation and resume the execution of the benchmarks. We only collect statistics for the cycle accurate part of the simulation.
 
 Each one of our results represents the average over two simulations with different core orders - either big cores first or little cores first. The initial state of the system can have a significant impact on performance. For the Linux scheduler in particular, the order of starting benchmarks will decide which benchmarks will be initially assigned to big and little cores. By randomizing the initial state and especially the execution order of the workload benchmarks for each simulation, we minimize the effect of randomness on our evaluation.
 
@@ -148,62 +155,152 @@ We compare COLAB against the Linux CFS scheduler~\cite{molnar2007cfs} and a sche
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.42]{figures/MSW4.png}
+\includegraphics[scale=0.45]{figures/MSW2.pdf}
 \caption{Heterogeneous Normalized Turnaround Time (H\_NTT) of single program workloads.  All results are normalized to the Linux CFS ones. Lower is better}
 \label{MSW}
 \end{figure}  
-\begin{figure*}
-\centering
-\includegraphics[scale=0.4]{figures/HANTT_NEW.pdf}
-\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) of multiprogrammed workloads on 2-big-2-little and 4-big-4-little configurations. All results are normalized to the Linux CFS ones. Lower is better.}
-\label{M24W}
-\end{figure*}
+
+%\begin{figure*}
+%\centering
+%\includegraphics[scale=0.4]{figures/HANTT_NEW.pdf}
+%\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) of multiprogrammed workloads on 2-big-2-little and 4-big-4-little configurations. All results are normalized to the Linux CFS ones. Lower is better.}
+%\label{M24W}
+%\end{figure*}
 
 
 \subsection{Experimental Results and Analysis}
 
 \subsubsection{Single-programmed Workloads}
-Much of the research on AMP scheduling focuses on single-programmed workloads. In this context, fairness and load balancing are not important, the focus is on core sensitivity and bottleneck acceleration. In this section, we examine how COLAB fares under this scenario. Figure~\ref{MSW} shows Heterogeneous Normalized Turnaround Time for all our multi-threaded benchmarks when executed alone on a 2-big-2-little hardware configuration. For each configuration and benchmark we present two bars, WASH (blue), COLAB(red). We do not present results for our two single-threaded benchmarks: scheduling them optimally for performance is trivial.
+Much of the research on AMP scheduling focuses on single-programmed workloads. In this context, fairness and load balancing are not important, the focus is on core sensitivity and bottleneck acceleration. In this section, we examine how COLAB fares under this scenario. Figure~\ref{MSW} shows Heterogeneous Normalized Turnaround Time for our multi-threaded benchmarks when executed alone on a 2-big-2-little hardware configuration. For each configuration and benchmark we present three bars, Linux(blue), WASH(red) and COLAB(violet). 
+Three SPLASH2 benchmarks $fmm$, $water\_nsquared$ and $water\_spatial$ do not support more than 2 threads with $simsmall$ input size on GEM5, so we do not present those 2-threaded benchmarks: scheduling them optimally for performance is trivial.
 
 The AMP-agnostic Linux scheduler is inappropriate for most benchmarks. COLAB improves H\_NTT by up to 58\% and by 12\% on average. Our best result relative to Linux is for \emph{ferret}. Most computation happens in a pipeline pattern but its stages are not balanced. AMP-aware schedulers take advantage of that by scheduling the longest stages, the bottleneck threads, on big cores. As a result, COLAB does only 13\% worse than running on a system \emph{with four big cores}, while CFS executes the benchmark 173\% slower.
 
 Our best result relative to WASH is for \emph{fluidanimate}. Previous work~\cite{bienia08characterization} has shown that \emph{fluidanimate} has around 100x more lock-based synchronizations than other PARSEC benchmarks. Our collaborative core allocation and thread selection policy is much better than WASH at prioritizing bottleneck threads.  As a result, we reduce turnaround time by 30\% compared to Linux and 20\% compared to WASH.
 
-In some cases, such as \emph{bodytrack}, \emph{dedup}, \emph{lu\_ncb}, or \emph{freqmine}, AMP-awareness has little effect on performance. Such benchmarks split work dynamically between threads, so they adapt to asymmetries in processing speed. Moreover, all threads executed the same code and display similar core sensitivity, so there is no benefit in assigning specific threads to specific cores. When either WASH or COLAB interfere with scheduling decisions, they are more likely to make wrong decisions or introduce overhead than help. Such behavior was also apparent in the original WASH paper~\cite{jibaja2016portable}.
+In some cases, such as \emph{bodytrack}, \emph{lu\_ncb}, or \emph{freqmine}, AMP-awareness has little effect on performance. Such benchmarks split work dynamically between threads, so they adapt to asymmetries in processing speed. Moreover, all threads executed the same code and display similar core sensitivity, so there is no benefit in assigning specific threads to specific cores. When either WASH or COLAB interfere with scheduling decisions, they are more likely to make wrong decisions or introduce overhead than help. Such behavior was also apparent in the original WASH paper~\cite{jibaja2016portable}.
 
 There is only one case where COLAB performs significantly worse than WASH. For \emph{swaptions}, we perform as well as the AMP-agnostic Linux scheduler while WASH improves turnaround time by 31\%. This is because the bottleneck threads of \emph{swaptions} are core insensitive while the non-bottleneck threads are core sensitive. This being the ideal case for WASH, it improves turnaround time while we fail to do the same.
 
 On average, WASH and COLAB perform similarly well and improve performance by 12\% compared to Linux when handling single program workloads. This is a limited scenario, with no need for fairness and a simple decision space. COLAB was not expected to perform much better than the state-of-the-art, doing as well as it is a positive result.
 
+
 \subsubsection{Multi-programmed Workloads}
-Multi-threaded multi-program scheduling is the general scheduling case and the one where COLAB can have the largest impact. We examined its performance under two different hardware configurations (2-big-2-little and 4-big-4-little) and the 38 different workloads listed in Table~\ref{WC}, each workload comprised of two, three, four, or six programs.
+Multi-threaded multi-programmed scheduling is the general scheduling case and the one where COLAB can have the largest impact. 
+We examined its performance under four different hardware configurations (2B2S, 2B4S, 4B2S, 4B4S) with three schedulers (Linux, WASH and COLAB) and the 26 different workloads listed in Table~\ref{WC}, each workload classified by synchronization-intensity, communication-to-computation ratio, amount of benchmarks and amount of application threads, or random-mixed from multiple classes. It results in 312 experiments in total. 
+\begin{figure}
+\centering
+\includegraphics[scale=0.39]{figures/sync.png}
+\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) and Heterogeneous System Throughput (H\_STP) of Synchronization-Intensive and Non-Synchronization-Intensive Workloads. All results are normalized to the Linux CFS ones. Lower is better for H\_ANTT and higher is better for H\_STP.}
+\label{sync}
+\end{figure} 
 
-\textbf{\textit{Heterogeneous Average Normalized Turnaround Time:}}
-Figure~\ref{M24W} shows the Heterogeneous Average Normalized Turnaround Time (H\_ANTT) for all evaluated combinations of hardware and workload. The hardware configuration is indicated on the X-axis of each subplot. Lower H\_ANTT translates into higher performance.
+\textbf{\textit{Synchronization Rate:}}
+Figure~\ref{sync} shows the performances of synchronization-intensive and non-synchronization-intensive workloads. The workloads grouped by hardware configuration and type of intensity are indicated on the X-axis of each subplot. Lower H\_ANTT and higher H\_STP translates into higher performance. We present the averaged results for each workloads and the geomean with two bars, WASH (blue) and COLAB(red).
 
-With co-executed programs interfering with the communication patterns of each other, accelerating bottlenecks and critical threads becomes much more important. As a result, COLAB improves turnaround time by up to 48\% compared to Linux and up to 51\% compared to WASH. On average, COLAB outperforms the Linux scheduler by 5.3\% to 27.5\%  depending on the configuration, while it outperforms WASH by 5.2\% to 25.3\% for different numbers of cores and co-scheduled programs. As a general rule, the benefits of using COLAB over the default Linux scheduler become more pronounced with more cores, while it is the opposite case when compared to WASH.
+Synchronization-intensive workloads fully composed by benchmarks with higher synchronization rates than others, which lead to the  much more importance of multiple bottlenecks and critical threads co-acceleration. Both heterogeneous-aware schedulers can show a significant advantage than Linux CFS on these cases. As a result, COLAB improves turnaround time by around 15\% compared to Linux and around 4\% compared to WASH on average of different configurations and workload compositions. On certain workloads and configuration cases, COLAB can outperform Linux by up to 20\% (2B2S) and outperform WASH by up to 16\% (2B2S). 
+The state-of-the-art WASH scheduler shows its limitations when used on limited resources (2B2S). With increasing  pressure  from  co-executed  applications, properly  balancing  bottleneck  acceleration and core sensitivity across multiple programs using only two big cores becomes difficult. WASH identifies these bottlenecks and assigns their threads to big cores without further consideration. Instead of accelerating the bottleneck threads, this leads to the bottleneck threads getting stuck waiting for CPU time in busy runqueues. At the same time, non-critical threads enjoy short waiting times on little cores. WASH ends up performing only 3\% better than Linux CFS. COLAB handles bottleneck threads in a more holistic way, improving performance around 19\% for the same scenario.
+Similar results are presented for the system throughput. COLAB outperform Linux by around 27\% and outperform WASH by around 7\%. 
 
-The state-of-the-art WASH scheduler shows its limitations when used on a limited 2-big-2-little configuration. With increasing pressure from co-executed applications, especially single-threaded ones, properly balancing bottleneck acceleration and core sensitivity across multiple programs using only two big cores becomes difficult. For instance,  both \emph{dedup} and \emph{fluidanimate} are limited by frequent synchronizations. WASH identifies these bottlenecks and assigns their threads to big cores without further consideration. Instead of accelerating the bottleneck threads, this leads to the bottleneck threads getting stuck waiting for CPU time in busy runqueues. At the same time, non-critical threads enjoy short waiting times on little cores. For workloads that include these two benchmarks (2B-9, 3B-8, 4B-3), WASH ends up performing up to 20\% worse than Linux CFS. COLAB handles bottleneck threads in a more holistic way, improving performance by 7\% to 14\% for the same workloads.
+As for the non synchronization-intensive workloads, both heterogeneous-aware schedulers do not have a significant optimization space as no many bottlenecks and critical threads can be detected and accelerated. As a result, both scheduler can still keep slightly better overall performance than Linux - COLAB improves turnaround time and system throughput by around 6\% and 12\% compared to Linux and around 2\% and 5\% compared to WASH.
 
-Such issues become more pronounced the higher the pressure on the scheduler. When handling more benchmarks than the number of cores WASH tends to be worse than Linux. In the case of 6-program workloads on the 2-big-2-little system, WASH does worse for seven out of nine workloads. Our approach faces no problems, always doing better than Linux and producing a 23\% performance gain on average. As a matter of fact, COLAB thrives under such scenarios: more pressure on the scheduler means more interference between programs, more asymmetry and bottlenecks, and more potential for acceleration.
+As a general rule matching our expectation, the benefits of using heterogeneous-aware schedulers over the default Linux scheduler become more pronounced with higher synchronization rate of multi-threaded multi-programmed workloads, and our COLAB keeps outperform the state-of-the-art WASH with a more significant advantage on limited resources scenarios.
 
-With more high performance cores, waiting times in big core runqueues fall and WASH behaves better. For 4-big-4-little systems, WASH achieves on average a 9\% performance gain against Linux. Still, our approach uses the processing resources more efficiently. It is better than WASH for 26 out of the 38 workloads, improving H\_ANTT by 11\% on average.
+\begin{figure}
+\centering
+\includegraphics[scale=0.39]{figures/com.png}
+\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) and Heterogeneous System Throughput (H\_STP) of Communication-Intensive and Computation-Intensive Workloads. All results are normalized to the Linux CFS ones. Lower is better for H\_ANTT and higher is better for H\_STP.}
+\label{com}
+\end{figure} 
 
-Co-scheduling single-threaded programs with multi-threaded ones tends to lead to suboptimal decisions for CFS and WASH. Single-threaded programs do not generally block, unless for I/O, so they might spend a long time running and forcing other thread in their runqueue to wait. CFS will occasionally place single-threaded programs in big cores, while WASH will do the same when the program is core sensitive. This means that bottleneck threads might end up spending a considerable amount of time waiting on big core runqueues for single-threaded programs to use their CPU time. COLAB, instead, will prioritize scheduling bottleneck threads, as long as it does not affect fairness. For workloads containing single-threaded benchmarks, our approach outperforms WASH for 30 out of 36 cases and CFS for 35 out of 36 cases. 
+\begin{figure}
+\centering
+\includegraphics[scale=0.35]{figures/nthread.png}
+\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) and Heterogeneous System Throughput (H\_STP) of low number of application threads and high number of application threads Workloads. All results are normalized to the Linux CFS ones. Lower is better for H\_ANTT and higher is better for H\_STP.}
+\label{nthread}
+\end{figure} 
 
-Overall, COLAB reduces the average turnaround time compared to CFS for 72 out of 76 cases. Even for the four cases where we do worse, the slowdown is less than 5\% and is due to the same effect discussed in the previous subsection: 
-benchmarks with parallel patterns that can accommodate asymmetry without scheduler help combined with the overhead of a more proactive scheduler. Compared to WASH, we improve performance for 64 out of 76 cases.
+\textbf{\textit{Communication-to-Computation Ratio:}}
+Figure~\ref{com} shows the performances of communication-intensive and computation-intensive workloads. 
+%The hardware configuration is indicated on the X-axis of each subplot. Lower H\_ANTT and higher H\_STP translates into higher performance.
+Communication intensive workloads fully composed by benchmarks with high communication-to-computation ratio, which lead to a significant amount of intra-program communications between multiple application threads. This can result in not only multiple runtime bottlenecks, but also light computation of each thread. So multiple bottlenecks need to be co-executed and each of them has lighter computation need to be done.
+Both heterogeneous-aware schedulers improve Linux CFS but have different advantages based on different hardware configurations. COLAB distributes the bottlenecks to be co-accelerated on both big and little cores, which results in a more significant improvement on limited big-core cases (2B2S, 2B4S). COLAB can outperform  Linux by up to 21\% and outperform WASH by up to 15\% on the 2B4S configuration on turnaround time. WASH accumulates the bottlenecks only on big cores, which results in a better performance on sufficient big-core cases (4B2S, 4B4S). WASH can outperform Linux by up to 18\% (4B4S) and outperform COLAB by up to 10\% (4B2S) on turnaround time. On average, COLAB improves the turnaround time by around 12\% compared to Linux and 1\% compared to WASH for those communication intensive workloads on all configurations. Similar results on system throughput, where COLAB outperforms Linux by around 18\% and outperforms WASH by around 5\%.
+
+Computation intensive workloads have lower communication -to-computation ratio and each thread might has higher load than in other workloads. In these workloads, less co-executed bottleneck threads need to be accelerated but each bottleneck might need more CPU time to be processed. This scenario has less improvement space for heterogeneous-aware schedulers against Linux than the above communication intensive cases as it has less acceleration opportunities. While it does show a better advantage from COLAB against WASH - multi-bottleneck distributed and co-accelerated on both big and little cores by COLAB does more efficiently use the given hardware resources against WASH to handle the few height bottlenecks. As a result, COLAB improves turnaround time and system throughput by around 10\% and 15\% compared to Linux and around 5\% and 5\% compared to WASH for those computation intensive workloads.
+
+In summary, heterogeneous aware schedulers show better performance gain on communication intensive workloads than computation intensive workloads. COLAB outperforms WASH on both workloads on average and show more significant advantage on computation intensive workloads. WASH only outperforms COLAB on communication intensive workloads with sufficient high performance big cores resources.
+%up to 36\% (Comm-4 on 2B2S) and outperform WASH by up tp 24\% (Comm-3 on 2B4S) on turnaround time.
+
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.35]{figures/nprog.png}
+\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) and Heterogeneous System Throughput (H\_STP) of 2-programmed and 4-programmed Workloads. All results are normalized to the Linux CFS ones. Lower is better for H\_ANTT and higher is better for H\_STP.}
+\label{nprog}
+\end{figure} 
 
 \begin{figure*}
 \centering
-\includegraphics[scale=0.4]{figures/HSTP_NEW.pdf}
-\caption{Heterogeneous System Throughput (H\_STP) of multiprogrammed workloads on 2-big-2-little and 4-big-4-little configurations. All results are normalized to the Linux CFS ones. Higher is better.}
-\label{M36W}
+\includegraphics[scale=0.5]{figures/rand.png}
+\caption{Heterogeneous Average Normalized Turnaround Time (H\_ANTT) and Heterogeneous System Throughput (H\_STP) of 2-programmed and 4-programmed Workloads. All results are normalized to the Linux CFS ones. Lower is better for H\_ANTT and higher is better for H\_STP.}
+\label{rand}
 \end{figure*} 
-\textbf{\textit{Heterogeneous System Throughput:}}
-Figure~\ref{M36W} shows our results for Heterogeneous System Throughput (H\_STP). As in the previous subsection, each subplot contains data for one hardware configuration and a specific number of co-scheduled programs.
 
-Linux CFS and WASH do slightly better than COLAB in a few cases as our policy targets turnaround time optimization and will make decisions that hurt throughput in order to maintain some fairness. Still, on average our approach does better than CFS and WASH for most configurations. For certain asymmetric multi-program workloads, COLAB achieves not only acceptable throughput but significant improvement over its competition. By distributing bottleneck threads more evenly across cores, it makes better use of the system resources, avoiding leaving cores idle. This translates into up to 86\% higher throughput performance gain on the 4-big-4-little system, for 2B-8, and up-to 44\% higher throughput on the 2-big-2-little system, for 6B-8.
+\textbf{\textit{Number of Application Threads:}}
+Figure~\ref{nthread} shows the performances of low number of application threads and high number of application threads Workloads. 
+%The hardware configuration is indicated on the X-axis of each subplot. Lower H\_ANTT and higher H\_STP translates into higher performance.
+For workloads with low number of application threads, we try to keep its total application threads to be less than or equal to 8 (the maximum of cores simulated). 
+%Two additional workloads (Sync-3, Common-3) with 9 threads are also  marked as low number of application threads because the lower bound of threads number on $bodytrack$
+Both heterogeneous-aware schedulers thrives  under those workloads compared to Linux. Few number of total application threads make it easier to indicate the bottlenecks and critical threads, and then place them carefully on sufficient resources - either by migrating to big cores (used by WASH and COLAB) or by also giving high priorities to be processed sooner on little cores (used by COLAB). With limited big core resources, COLAB does enjoy a more significant performance gain against WASH by distributing those few bottlenecks on both big and little cores to accelerate simultaneously and avoid leaving cores idle. COLAB outperforms Linux by up to 25\% (2B4S) and outperforms WASH by up to 21\% (2B4S) on turnaround time. On average, COLAB improves turnaround time and system throughput by around 20\% and 35\% compared to Linux and around 8\% and 11\% compared to WASH for workloads.
+
+As for workloads with high number of application threads - the total amount of threads significant greater than the number of co-executed cores and processes, both heterogeneous-aware do not have a good optimization space. Massive threads on limited resources lead to the fact that even carefully schedule bottlenecks and critical threads to accelerate on different cores, each core still has a long wait list in its runqueue. The additional content switches and migration between runqueues by heterogeneous-aware approaches might not benefit the performance but definitely increasing the system overload. COLAB equipped with the scale-slice technique might results in more frequent runtime migrations, which leads to a slightly worse performance than WASH. On average, COLAB improves turnaround time and system throughput by less than 2\% and 3\% compared to Linux, while WASH slightly outperforms COLAB by 2\% on turnaround time and 0.2\% on system throughput.
+
+In summary, heterogeneous-aware schedulers significant advantage on workloads with reasonable amount number of total threads than workloads with massive large number of threads. COLAB presents much better performance than WASH on low number of threads cases while only slightly worse than WASH on high number of threads cases. We suggest multi-programmed co-execution workloads to generate reasonable amount of threads for each program to fully enjoy the benefit from heterogeneous-aware schedulers and reduce the system overload.
+
+\textbf{\textit{Number of Co-executed Programs:}}
+Figure~\ref{nprog} shows the performances of 2-programmed and 4-programmed Workloads. 
+%The hardware configuration is indicated on the X-axis of each subplot. Lower H\_ANTT and higher H\_STP translates into higher performance.
+Increasing the number of co-executed programs gives higher pressure on the scheduler. Heterogeneous aware schedulers generally enjoy better performance gain against Linux on workloads with less programs. Similar as the issue in the above comparisons for total number of threads, more programs with more threads increase the waiting list on runqueues and reduce the direct benefit of migrations between waiting programs/threads. While by more intelligent distributed placing critical threads between big and little cores, our COLAB does face less problem than WASH from the pressure of increasing programs. 
+
+As a result, both COLAB and WASH can outperform Linux by more than 10\% on 2-programmed workloads on turnaround time and COLAB can keep the 10\% performance gain also on 4-programmed workloads, while WASH reduced to only have 5\% performance gain on 4-programmed workloads. As for system throughput, COLAB improves by 23\% and 12\% on 2-programmed and 4-programmed workloads compared to Linux while improves by 5\% and 6\% on 2-programmed and 4-programmed workloads compared to WASH.
+
+\textbf{\textit{Random-mixed Multi-class Programs:}}
+Figure~\ref{rand} shows the performances of 10 random-mixed Workloads composed by benchmarks from multiple classes and random number of total application threads. %The hardware configuration is indicated on the X-axis of each subplot. Lower H\_ANTT and higher H\_STP translates into higher performance.
+Those are more general experimental cases that programs comes from multiple intensities with randomly number of total application threads. As a matter of fact, COLAB thrives under such scenarios: diverse intensities means more asymmetry, more bottlenecks, more type of critical threads and more potential for acceleration. Our collaborative multi-factor scheduler carefully handling all multiple issues (core sensitivity, thread criticality and fairness) deserve the significant performance gain against WASH and Linux on this scenario - COLAB improves turnaround time and system throughput by around 12\% and 11\% compared to Linux and around 8\% and 7\% compared to WASH for those computation intensive workloads. 
+
+
+%\textbf{\textit{Heterogeneous Average Normalized Turnaround Time:}}
+%Figure~\ref{M24W} shows the Heterogeneous Average Normalized Turnaround Time (H\_ANTT) for all evaluated combinations of hardware and workload. The hardware configuration is indicated on the X-axis of each subplot. Lower H\_ANTT translates into higher performance.
+
+%$$ $$
+%***********old descriptions by Pavlos***************
+%$$ $$
+%With co-executed programs interfering with the communication patterns of each other, accelerating bottlenecks and critical threads becomes much more important. As a result, COLAB improves turnaround time by up to 48\% compared to Linux and up to 51\% compared to WASH. On average, COLAB outperforms the Linux scheduler by 5.3\% to 27.5\%  depending on the configuration, while it outperforms WASH by 5.2\% to 25.3\% for different numbers of cores and co-scheduled programs. As a general rule, the benefits of using COLAB over the default Linux scheduler become more pronounced with more cores, while it is the opposite case when compared to WASH.
+
+%The state-of-the-art WASH scheduler shows its limitations when used on a limited 2-big-2-little configuration. With increasing pressure from co-executed applications, especially single-threaded ones, properly balancing bottleneck acceleration and core sensitivity across multiple programs using only two big cores becomes difficult. For instance,  both \emph{dedup} and \emph{fluidanimate} are limited by frequent synchronizations. WASH identifies these bottlenecks and assigns their threads to big cores without further consideration. Instead of accelerating the bottleneck threads, this leads to the bottleneck threads getting stuck waiting for CPU time in busy runqueues. At the same time, non-critical threads enjoy short waiting times on little cores. For workloads that include these two benchmarks (2B-9, 3B-8, 4B-3), WASH ends up performing up to 20\% worse than Linux CFS. COLAB handles bottleneck threads in a more holistic way, improving performance by 7\% to 14\% for the same workloads.
+
+%Such issues become more pronounced the higher the pressure on the scheduler. When handling more benchmarks than the number of cores WASH tends to be worse than Linux. In the case of 6-program workloads on the 2-big-2-little system, WASH does worse for seven out of nine workloads. Our approach faces no problems, always doing better than Linux and producing a 23\% performance gain on average. As a matter of fact, COLAB thrives under such scenarios: more pressure on the scheduler means more interference between programs, more asymmetry and bottlenecks, and more potential for acceleration.
+
+%With more high performance cores, waiting times in big core runqueues fall and WASH behaves better. For 4-big-4-little systems, WASH achieves on average a 9\% performance gain against Linux. Still, our approach uses the processing resources more efficiently. It is better than WASH for 26 out of the 38 workloads, improving H\_ANTT by 11\% on average.
+
+%Co-scheduling single-threaded programs with multi-threaded ones tends to lead to suboptimal decisions for CFS and WASH. Single-threaded programs do not generally block, unless for I/O, so they might spend a long time running and forcing other thread in their runqueue to wait. CFS will occasionally place single-threaded programs in big cores, while WASH will do the same when the program is core sensitive. This means that bottleneck threads might end up spending a considerable amount of time waiting on big core runqueues for single-threaded programs to use their CPU time. COLAB, instead, will prioritize scheduling bottleneck threads, as long as it does not affect fairness. For workloads containing single-threaded benchmarks, our approach outperforms WASH for 30 out of 36 cases and CFS for 35 out of 36 cases. 
+
+%Overall, COLAB reduces the average turnaround time compared to CFS for 72 out of 76 cases. Even for the four cases where we do worse, the slowdown is less than 5\% and is due to the same effect discussed in the previous subsection: 
+%benchmarks with parallel patterns that can accommodate asymmetry without scheduler help combined with the overhead of a more proactive scheduler. Compared to WASH, we improve performance for 64 out of 76 cases.
+
+%\begin{figure*}
+%\centering
+%\includegraphics[scale=0.4]{figures/HSTP_NEW.pdf}
+%\caption{Heterogeneous System Throughput (H\_STP) of multiprogrammed workloads on 2-big-2-little and 4-big-4-little configurations. All results are normalized to the Linux CFS ones. Higher is better.}
+%\label{M36W}
+%\end{figure*}
+
+%\textbf{\textit{Heterogeneous System Throughput:}}
+%Figure~\ref{M36W} shows our results for Heterogeneous System Throughput (H\_STP). As in the previous subsection, each subplot contains data for one hardware configuration and a specific number of co-scheduled programs.
+
+%Linux CFS and WASH do slightly better than COLAB in a few cases as our policy targets turnaround time optimization and will make decisions that hurt throughput in order to maintain some fairness. Still, on average our approach does better than CFS and WASH for most configurations. For certain asymmetric multi-program workloads, COLAB achieves not only acceptable throughput but significant improvement over its competition. By distributing bottleneck threads more evenly across cores, it makes better use of the system resources, avoiding leaving cores idle. This translates into up to 86\% higher throughput performance gain on the 4-big-4-little system, for 2B-8, and up-to 44\% higher throughput on the 2-big-2-little system, for 6B-8.
+
 %Towards all 76 individual cases, other approaches only better than us on 3 cases and our approach only less than 10\% worse than them in the worst case (3B-6 on the 2-big-2-little configuration). 
 %The collaboration-only approach can also do better than both Linux and WASH in most cases but worse than our final approach equipped with the multi-factor Coordinated model.
 
@@ -221,4 +318,50 @@ Linux CFS and WASH do slightly better than COLAB in a few cases as our policy ta
 
 
 
-\textbf{\textit{Experimental Summary}} As shown in the results, the state-of-the-art AMP-aware WASH scheduler struggles to make good decisions as the number of co-scheduled programs rises. Trying to handle both core sensitivity and bottleneck acceleration through thread affinity alone may lead to too many threads assigned to big cores. Instead, we handle the two optimization aims separately. We assign on big cores only threads which run significantly faster on them and we prioritize running bottleneck threads regardless of their thread affinity. This leads to improved turnaround time, higher throughput, and better use of the processor resources compared to both CFS and WASH.
+\textbf{\textit{Experimental Summary}} As shown in the results, the state-of-the-art heterogeneous-aware WASH scheduler struggles to make more efficient decisions on variant scenarios: synchronization-intensive workloads, computation-intensive workloads, low threads number workloads, high program number workloads, mixed multi-class workloads and limited big cores configurations. Trying to handle both core sensitivity and bottleneck acceleration through thread affinity alone may lead to too many threads assigned to big cores. Instead, we handle the two optimization aims separately. We assign on big cores only threads which run significantly faster on them and we prioritize running bottleneck threads regardless of their thread affinity. This leads to improved turnaround time, higher throughput, and better use of the processor resources compared to both CFS and WASH. In summary from all 312 experiments, COLAB improves turnaround time and system throughput by 11\% and 15\% compared to Linux and by 5\% and 6\% compared to WASH.
+
+
+
+%\begin{table*}
+ % \caption{Workloads Compositions}
+ % \center
+ % \label{WC}
+ %  \scalebox{0.9}{
+ %  \begin{tabular}{p{1.5cm} |p{5.5cm} || p{1.5cm} |p{9cm} }
+ %    \toprule[1pt]
+ %    \multicolumn{4}{c}{Random-mixed Workloads from PARSEC3.0 and SPLASH-2}\\
+ %    \toprule[1pt] 
+ %   2B-1 &blackshcoles - radix &4B-1 &blackshcoles - bodytrack - radix - lu\_ncb\\
+ %   2B-2 &fft - swaptions &4B-2 &water\_spatial - fmm - fft - fluidanimate\\
+ %   2B-3 &lu\_cb - dedup  &4B-3 &lu\_cb - water\_nsquared - fmm - freqmine\\
+ %   2B-4 &lu\_ncb - bodytrack &4B-4 &lu\_cb - lu\_ncb - bodytrack - dedup\\
+ %  2B-5 &ferret - fluidanimate &4B-5 &radix - lu\_ncb - lu\_cb - fft\\
+  %  2B-6 &freqmine - water\_nsquared &4B-6 &blackscholes - bodytrack - dedup - fluidanimate\\
+  %  2B-7 &ocean\_cp - fft &4B-7 &radix - ocean\_cp - blackscholes - swaptions\\
+  %  2B-8 &ferret - water\_spatial &4B-8 &water\_spatial - water\_nsquared - ferret - freqmine\\
+  %  2B-9 &fluidanmiate - fmm &4B-9 &fmm - water\_spatial - ferret - swaptions\\
+  %  2B-10 &fmm - water\_spatial &4B-10 &ocean\_cp - fft - fluidanimate - swaptions\\
+  %  6B-M &blackshcoles,bodytrack,dedup,radix,lu\_ncb,lu\_cb\\
+  %  8B-M &blackshcoles,bodytrack,dedup,fluidanmiate,radix,lu\_ncb,lu\_cb,radiosity\\
+  %  12B-M &blackshcoles,bodytrack,dedup,fluidanmiate,streamcluster,swaptions,radix,lu\_ncb,lu\_cb,radiosity,ocean\_cp,fft\\    
+%     \midrule
+ %    \toprule[1pt]
+ %    \multicolumn{4}{c}{Multi/Single-thread multiprogrammed Workloads from PARSEC3.0, SPLASH-2 and SPEC2006}\\
+ %    \toprule[1pt]  
+ %   3B-1 &blackshcoles - radix - mcf &6B-1 &blackshcoles - bodytrack - radix - lu\_ncb - mcf - bzip2\\
+  %  3B-2 &fft - swaptions - mcf &6B-2 &fft - radix - blackscholes - fluidanimate - mcf - bzip2\\
+   % 3B-3 &freqmine - swaptions - mcf &6B-3 &blackscholes - dedup - freqmine - swaptions - mcf - bzip2\\
+%    3B-4 &blackscholes - freqmine - bzip2 &6B-4 &lu\_cb - lu\_ncb - bodytrack - dedup - mcf - bzip2\\
+    %3B-5 &ocean\_cp - fluidanimate - mcf &6B-5 &radix - lu\_ncb - lu\_cb - fft - mcf - bzip2\\
+ %   3B-5 &radix - lu\_ncb - bzip2 &6B-5 &radix - lu\_ncb - lu\_cb - fft - mcf - bzip2\\
+  %  3B-6 &fluidanimate - freqmine - bzip2 &6B-6 &blackscholes - freqmine - swaptions - fluidanimate - mcf - bzip2\\
+   % 3B-7 &blackscholes - fluidanimate - bzip2 &6B-7 &lu\_ncb - ocean\_cp - bodytrack - swaptions - mcf - bzip2\\
+%    3B-8 &dedup - fluidanimate - bzip2 &6B-8 &lu\_cb - ocean\_cp - dedup - swaptions - mcf - bzip2\\
+ %   3B-9 &lu\_cb - swaptions - bzip2 &6B-9 &ocean\_cp - fft - fluidanimate - swaptions - mcf - bzip2\\
+ %   7B-MS   &blackshcoles,bodytrack,dedup,radix,lu\_ncb,lu\_cb,mcf\\
+ %   11B-MS &blackshcoles,bodytrack,dedup,canneal,swaptions,radix,lu\_ncb,lu\_cb,radiosity, bzip2,mcf\\ 
+  %  15B-MS &blackshcoles,bodytrack,dedup,fluidanmiate,streamcluster,canneal,swaptions,radix,lu\_ncb,lu\_cb,radiosity, ocean\_cp,fft,bzip2,mcf\\   
+  % &6B-7 &radix - ocean\_cp - blackscholes - swaptions - mcf - bzip2\\
+ %   \bottomrule
+ % \end{tabular}}
+%\end{table*}

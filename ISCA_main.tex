@@ -1,36 +1,58 @@
-\documentclass[10pt,conference]{IEEEtran}
-\IEEEoverridecommandlockouts
-% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
-\usepackage{algorithmic}
-\usepackage{algorithm}
-\usepackage{graphicx}
-\usepackage{textcomp}
-\usepackage{xcolor}
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
-\begin{document}
-
-\title{COLAB: A Collaborative Multi-factor Scheduler for Asymmetric Multicore Processors
-%\thanks{Identify applicable funding agency here. If none, delete this.}
-}
-
-%\author{\IEEEauthorblockN{double-blind review\textsuperscript{} }
-%\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-%\textit{name of organization (of Aff.)}\\
-%City, Country \\
-%email address}
-%\and
-%}
-
-\maketitle
-%%%%%%%%%%%---SETME-----%%%%%%%%%%%%%
-%\title{COLAB: A Collaborative Multi-factor Scheduler for Asymmetric Multicore Processors} 
-%\author{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is the template for submission to ISCA 2019
+% The cls file is a modified from  'sig-alternate.cls'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\documentclass{sig-alternate} 
+\usepackage{mathptmx} % This is Times font
 
+\newcommand{\ignore}[1]{}
+\usepackage{fancyhdr}
+\usepackage[normalem]{ulem}
+\usepackage[hyphens]{url}
+\usepackage{microtype}
+\usepackage{pdfpages}
+\usepackage{booktabs}
+%\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{color}
+\newcommand\mingcan[1]{\noindent{\color{green} {\bf \fbox{mingcan}} {\it#1}}}
+\newcommand{\todo}[1]{{\color{red}{#1}}}
+\hyphenation{Turn-around}
+%\renewcommand{\algorithmcfname}{ALGORITHM}
+\usepackage[noend]{algorithmic}
+
+% Always include hyperref last
+\usepackage[bookmarks=true,breaklinks=true,colorlinks,linkcolor=black,citecolor=blue,urlcolor=black]{hyperref}
+
+% Ensure letter paper
+\pdfpagewidth=8.5in
+\pdfpageheight=11in
+
+
+%%%%%%%%%%%---SETME-----%%%%%%%%%%%%%
+\newcommand{\iscasubmissionnumber}{518}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\fancypagestyle{firstpage}{
+  \fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+  \fancyhead[C]{\normalsize{ISCA 2019 Submission
+      \textbf{\#\iscasubmissionnumber} \\ Confidential Draft: DO NOT DISTRIBUTE}} 
+  \fancyfoot[C]{\thepage}
+}  
+
+\pagenumbering{arabic}
+
+%%%%%%%%%%%---SETME-----%%%%%%%%%%%%%
+\title{COLAB: A Collaborative Multi-factor Scheduler for Asymmetric Multicore Processors} 
+\author{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+\thispagestyle{firstpage}
+\pagestyle{plain}
 
 \input{abstract.tex}
 \input{introduction.tex}
@@ -49,9 +71,8 @@ We analyze the performance impact of multiple runtime performance factors and th
 \subsection{Runtime Factor Analysis}
 The relationships between runtime performance factors and the functions which address them is shown in Figure~\ref{figure:f1}. In order to achieve runtime collaboration, both core allocator and thread selector share information and account for all measured performance factors, including core sensitivity, bottleneck acceleration and fairness carefully as illustrated below:
 %We describe them below by discussing each element. 
-%\begin{itemize}
-\subsubsection{Core Allocator}
-AMP-aware Core allocators are mainly directed by the core sensitivity factor -- migrating a high speedup thread (with a large differential between big and little core execution time) from  a little core to execute on a big core will generally provide more benefit than migrating a low speedup thread. 
+\begin{itemize}
+\item \textbf{\textit{Core Allocator}} AMP-aware Core allocators are mainly directed by the core sensitivity factor -- migrating a high speedup thread (with a large differential between big and little core execution time) from  a little core to execute on a big core will generally provide more benefit than migrating a low speedup thread. 
 
 However, this heuristic is overly simplistic. Issues are revealed when the bottleneck factor is considered simultaneously on multiprogrammed workloads. Previous approaches \cite{jibaja2016portable} simply combine the calculation from  bottleneck acceleration and predicted speedup together, but this can result in suboptimal scheduling decisions -- both locking threads and high speedup threads may be accumulating in the runqueues of big cores as is illustrated in the motivating example in the Introduction. More intelligent core allocation decisions can be made by avoiding a simple combination of bottleneck acceleration and speedup -- the overall schedule can benefit from a more collaborative execution environment where big cores focus on high speedup bottleneck threads, and little cores handle other low speedup bottlenecked threads without additional migration.
 
@@ -59,8 +80,8 @@ However, this heuristic is overly simplistic. Issues are revealed when the bottl
 Furthermore, core allocators are desired to achieving relative fairness on AMPs by efficiently sharing heterogeneous hardware and avoiding idle resource as much as possible. 
 Simply mapping ready threads uniformly between different type of cores can not achieve true load-balancing -- the number of ready threads prioritized on different type of core is different and thus, a hierarchical allocation should be applied to guarantee the overall fairness, which avoids the need to frequently migrate threads to empty runqueues. 
 
-\subsubsection{Thread Selector}
-Thread selector makes the final decisions on which thread will be executed during runtime. It is usually the responsibility of thread selector to avoid bottlenecking by thread blocking. In a multi-thread multiprogrammed environment, multiple bottleneck threads from different programs may need to be accelerated simultaneously with constraint hardware resources. Instead of simply detecting the bottleneck threads and throwing all of them to big cores as previous bottleneck acceleration schedulers \cite{jibaja2016portable,joao2013utility,joao2012bottleneck}, the thread selector needs to make collaborative decisions -- ideally, both big cores and little cores select bottlenecks to run simultaneously.
+
+\item \textbf{\textit{Thread Selector}} Thread selector makes the final decisions on which thread will be executed during runtime. It is usually the responsibility of thread selector to avoid bottlenecking by thread blocking. In a multi-thread multiprogrammed environment, multiple bottleneck threads from different programs may need to be accelerated simultaneously with constraint hardware resources. Instead of simply detecting the bottleneck threads and throwing all of them to big cores as previous bottleneck acceleration schedulers \cite{jibaja2016portable,joao2013utility,joao2012bottleneck}, the thread selector needs to make collaborative decisions -- ideally, both big cores and little cores select bottlenecks to run simultaneously.
 
 Core sensitivity is usually unrelated to the thread selector -- whether a thread can enjoy a high speedup from a big core compared with a little core is unrelated to which runqueue it is on, or came from. Therefore the thread selector should separate thread priority caused by core sensitivity and solely base decisions on bottleneck acceleration. One exception is that when the runqueue of a big core is empty and the thread selector is invoked -- the speedup factors from core sensitivity of ready threads should be considered only in this case. Big cores may even preempt the execution of little cores when necessary.  
 
@@ -68,6 +89,7 @@ The final concern of thread selector is about fairness. Scaling time slice of th
 %In single-threaded multiprogrammed scenarios, complicated fairness formulation \cite{kim2018exploring} has been proposed to guide the thread selector for more precise decisions. 
 Problems occur when targeting multi-threaded multi-programmed workloads. Simply keeping a thread-level equal progress is not enough to guarantee the multi-application level fairness -- the thread selector should ensure the whole workload is in relative equal progress without penalizing any individual application. In fact,  multi-bottleneck acceleration by both big and little cores does provide an opportunity for this - the thread selector makes the best attempt to keep fairness on all applications by accelerating bottlenecks from all of them and as soon as possible.
 
+\end{itemize}
 
 %\textbf{\textit{Fairness:}} Fairness is critical for system performance. A good schedule achieving relative fairness on AMPs should efficiently share heterogeneous hardware and avoid idle resource as much as possible. To achieve the expected relative equal-progress between threads and load-balancing between cores, the core allocator should map ready threads relative uniformly,avoiding the need to frequently migrate threads to empty runqueues. The design of the preemption triggering mechanism  also affects fairness, as it determines the maximum length of a time slice.
 
@@ -92,13 +114,13 @@ Problems occur when targeting multi-threaded multi-programmed workloads. Simply 
 To address the problems detailed above, we designed a coordinated multi-factor scheduler in which the core allocator and the thread selector collaborate to achieve high performance and high fairness, when compared to the state-of-the-art mixed multi-factor evaluator in WASH \cite{jibaja2016portable}.
 %While the way we define whether a thread's relative speedup value is high or low is similar as in WASH based on hardware configuration - if we have same number of big and little cores, then we rank all ready threads based on its relative speedup and view the first half as high speedup value. 
 The flowchart of our model is shown in Figure~\ref{figure:f2}. 
-Collaboration is facilitated by periodically labeling ready threads in two different categories, based on runtime models of speedup prediction and bottleneck identification: 
-%\begin{itemize}
-\subsubsection{Labels for Core Allocation}
-Threads with high predicted speedup between big and little cores will be labeled as high priority on big cores. Threads with both low predicted speedup and blocking levels -- non-critical threads -- will obtain high priority on little cores (and low priority on big cores). Remaining threads obtain equal priority on either big or little cores -- these threads can then be allocated freely to balance the load of cores.
-\subsubsection{Labels for Thread Selection}
-Threads with high blocking level will be labeled as high priority on local thread selection. The same priority will be given on these blocking threads whether the issuing cores are big or little, so the labels of thread selection do not distinguish the type of cores.The label nevertheless records the type of the current core -- threads always have priority to be selected by the same type of cores if there exists a core of the same type with an empty runqueue. Running threads on little cores are also labeled as they may be preempted to migrate and execute on big cores when suited, but running threads will never have priority over waiting ready threads. 
 
+Collaboration is facilitated by periodically labeling ready threads in two different categories, based on runtime models of speedup prediction and bottleneck identification: 
+\begin{itemize}
+\item \textbf{\textit{Labels for Core Allocation:}} Threads with high predicted speedup between big and little cores will be labeled as high priority on big cores. Threads with both low predicted speedup and blocking levels -- non-critical threads -- will obtain high priority on little cores (and low priority on big cores). Remaining threads obtain equal priority on either big or little cores -- these threads can then be allocated freely to balance the load of cores.
+\item \textbf{\textit{Labels for Thread Selection:}} 
+Threads with high blocking level will be labeled as high priority on local thread selection. The same priority will be given on these blocking threads whether the issuing cores are big or little, so the labels of thread selection do not distinguish the type of cores.The label nevertheless records the type of the current core -- threads always have priority to be selected by the same type of cores if there exists a core of the same type with an empty runqueue. Running threads on little cores are also labeled as they may be preempted to migrate and execute on big cores when suited, but running threads will never have priority over waiting ready threads. 
+\end{itemize}
 
 %The thread labels should be not only be based on the relative ranking between threads, but also on boundary conditions targeting different hardware resource and experimental environments. 
 %We setup empirical boundaries for speedup and blocking: (1) No thread is ranked as high-speedup if its predicted speedup value is less than an empirical architecture-specific boundary, calculated using relative frequency between big and little cores. 
@@ -132,26 +154,25 @@ To construct the training set, we run all applications in single-program mode wi
    \scalebox{1}{
    \begin{tabular}{p{2cm} | p{6cm} | p {9cm} c c c}
  % \begin{tabular}{l c c c c}
-  \hline
+   \toprule[1pt]
     \multicolumn{3}{c}{Selected GEM5 performance counters by PCAT}\\
-  \hline
+    \toprule[1pt]
      Index&  Name& Description \cite{binkert2011gem5} \\
-    \hline
+     \midrule
      A: & fp\_regfile\_writes & number of integer regfile writes\\
      B: & fetch.Branches & number of branches that fetch encountered\\
      C: & rename.SQFullEvents & number of times rename has blocked due to SQ full\\
      D: & quiesceCycles & number of cycles  quiesced or waiting for an interrupt\\
      E: & dcache.tags.tagsinuse & cycle average of tags of dcache in use\\
      F: & fetch.IcacheWaitRetryStallCycles & number of stall cycles due to full MSHR\\
-     \hline
+     \midrule
      G: & commit.committedInsts & number of instructions committed\\
-     \hline
-    % \toprule[1pt]
+     \midrule
+     \toprule[1pt]
      \multicolumn{3}{c}{Linear predictive speedup model}\\
-     \hline
+     \toprule[1pt]
      \multicolumn{3}{c}{2.6109+((0.0018*-0.185A)+(0.0259*0.187B)+(0.1047*0.194C)+(-0.023*0.238D)+(0.0492*-0.299E)+(-0.1388*-0.227F))/G}\\
-  %  \bottomrule
-  \hline
+    \bottomrule
   \end{tabular}}
 \end{table*}
 
@@ -177,10 +198,10 @@ To achieve relative equal-progress on AMPs, threads running on different types o
 \STATE core\_alloctor\_(thread\_struct\ $t$)\{
 %\FOR {$t : ready\_threads$}
 %\IF {t->high\_speedup() \& t->high\_block()}
-\IF {t.high\_speedup}
+\IF {t->high\_speedup}
 \RETURN rr\_allocator\_(big\_cores)
 \ENDIF
-\IF {t.low\_speedup \& t.low\_block}
+\IF {t->low\_speedup \& t->low\_block}
 %\& !unique(t->tgid)}
 \RETURN rr\_allocator\_(little\_cores)
 \ENDIF
@@ -188,18 +209,18 @@ To achieve relative equal-progress on AMPs, threads running on different types o
 \STATE \}
 \STATE thread\_selector\_(core\_struct\ $c$)\{
 %\IF {c->cur \& !(preempt_wakeup)}
-\IF {!empty(c.rq)}
-\RETURN max\_block\_(c.rq)
+\IF {!empty(c->rq)}
+\RETURN max\_block\_(c->rq)
 \ENDIF
 %\IF {c->type == big}
-\IF {!empty(c.sched\_domain.rq)}
-\RETURN max\_block\_(c.sched\_domain.rq)
+\IF {!empty(c->sched\_domain->rq)}
+\RETURN max\_block\_(c->sched\_domain->rq)
 \ENDIF
-\IF {c.cpu\_mask == big}
+\IF {c->cpu\_mask == big}
 %\FOR {t : little\_core->cur}
 %\STATE candidates.enqueue(t)
 %\IF {!empty(candidates)}
-\RETURN  max\_block\_(c.sched\_domain\_little.cur)
+\RETURN  max\_block\_(c->sched\_domain\_little->cur)
 \ENDIF
 %\ENDFOR
 %\ENDIF
@@ -230,8 +251,9 @@ To fill the gap of different core clusters, remain ready threads (usually with n
 The thread selector is based on the principle of accelerating the most critical/blocking thread as soon as possible, shown in line 10, 12, 14. Triggered by different cores, the selector always try to return  a local candidate first instead of invoking additional migrations (line 10). When there are no local waiting threads and migration is beneficial, cores give priority for candidate threads waiting on other's runqueue and from there the most blocking thread will be selected.
 To reduce the overhead of accessing global CPUs states, we follow the same principle of the default Linux CFS scheduling domain (\texttt{struct sched\_domain}) - returning the best candidate thread from the local core group first (line 12).
 Further, we allow a big core to select and preempt a running thread on little core to accelerate it (line 13,14). Idle resources will only occur when there is not any possible useful work to be done (line 15) - for instance, we do not allow a little core to preempt a big core's execution. 
+
 In summary, the thread selector can still access all other global runqueues when necessary, but it is biased to access nearly runqueues first, due to bottleneck and core sensitivity concerns. 
-Note that the relative equal-progress for achieving fairness is addressed by the scale-slice preemption checker instead of the thread selector -- we give each thread a maximum time slice relative to its expected performance on the asymmetric core.
+Note that the relative equal-progress for achieving fairness is addressed by the scale-slice preemption checker instead of the thread selector -- we give each thread a maximum time slice relative to its expected performance on the asymetric core.
 
 \textbf{\textit{Discussion:}}
 This section provides a case study, implementing our scheduling framework targeting simulated ARM architectures and processors on GEM5.  However, the underlining general procedure and model can be implemented on real processors by using their hardware performance monitor events (PMU). All hardware counters used by our model are supported by the ARM Cortex-A57/A53 \cite{ARMA57} PMU.
@@ -239,13 +261,13 @@ This section provides a case study, implementing our scheduling framework target
 %To further minimize the overhead of accessing global CPUs states to implement our approach on real systems, the thread selector can be configured to check other cpus one by one instead of 
 
 \input{evaluation.tex}
-%\vspace{10mm}
+\vspace{10mm}
 \section{Conclusion}
 This paper presents a novel scheduling framework targeting multi-threaded multiprogrammed workloads on asymmetric multicore processors. This scheduler is the first to account for all three factors affecting AMP scheduling: core affinity, thread criticality, and scheduling fairness, using a general purpose asymmetry-aware scheduler.
 
-Over a representative selection of multi-programmed workloads, we achieve more than 10\% performance gain compared to Linux, and more than 5\% performance gain to a state-of-the-art heterogeneous-aware scheduler on average.
+Over a representative selection of multi-programmed workloads, we achieve up to 51\% performance gain, and 5\% to 27\% on average on different hardware setups when compared to the Linux CFS scheduler and a state-of-the-art AMP-aware scheduler.
 
-%27\% on average on different hardware setups when compared to the Linux CFS scheduler and
+
 
 %Compared with the default Linux CFS scheduler and the state-of-the-art AMP-aware WASH scheduler, COLAB achieves up-to 51\% performance gain in heterogeneous average normalized turnaround time (H\_ANTT) while 5\% to 27\% on average depending on the hardware setup and up-to 30\% increase on heterogeneous system throughput (H\_STP) in geomean targeting multi-threaded multiprogrammed co-executed workloads. 
 %It performs significantly better when workloads contain both multi-threaded and single-thread applications achieving performance gain up to 54\% in average normalized turnaround time and 46\% increase on system throughput against both the previous approaches.

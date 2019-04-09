@@ -1,15 +1,17 @@
 \section{Background and Related Work}
 \label{rw}
 
-\begin{table}
+\begin{table}[htbp]
   \caption{Qualitative Analysis on Related Work}
-  \center
+  \begin{center}
   \label{rwt}
-  \scalebox{0.8}{
-   \begin{tabular}{p{3cm} p{1cm} p{1cm} p{1cm} p{2.2cm}c c c c c }
-     \toprule[1pt]
+  \scalebox{0.9}{
+   \begin{tabular}{p{3cm} p{1cm} p{1cm} p{1cm} p{2cm} c c c c c }
+   \hline
+     %\toprule[1pt]
      Approaches&Core Sens.&Fairness&Bottle- neck&Collaborative\\
-     \toprule[1pt] 
+     %\toprule[1pt]
+     \hline
     Kumar, et al \cite{kumar2004single} &$\checkmark$&&&\\
     Li, et al \cite{li2009efficient}&&$\checkmark$&&\\
     Suleman, et al. \cite{suleman2009accelerating}&&&$\checkmark$&\\
@@ -20,8 +22,10 @@
      Kim, et al \cite{kim2018exploring}&$\checkmark$&$\checkmark$&\\
      Jibaja, et al \cite{jibaja2016portable}&$\checkmark$&$\checkmark$&$\checkmark$\\
     \textbf{COLAB}&$\checkmark$&$\checkmark$&$\checkmark$&$\checkmark$\\
-    \bottomrule
+    \hline    
+%\bottomrule
   \end{tabular}}
+  \end{center}
 \end{table}
 
 Initially described by Kumar et al.~\cite{kumar2004single,kumar2003single}, single-ISA heterogeneous multicore processors allow for more efficient processing, but to realize this we need the OS scheduler to match threads with cores more suited to their requirements. A straightforward way to determine good matches is based on the \emph{IPC} of the application on each kind of core. While easy to understand and perform, IPC is a reliable metric of performance only for single threaded applications, the search might be lengthy, and it will be affected by resource sharing and phase changes.
