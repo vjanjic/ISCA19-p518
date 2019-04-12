@@ -37,7 +37,7 @@
 \input{background.tex}
 
 \section{Multi-factor Coordinated Scheduler}
-We analyze the performance impact of multiple runtime performance factors and their relationships with different functional units in the scheduler. We build a scheduler which addresses these performance factors in a coordinated way.
+We analyze the performance impact of multiple runtime performance factors and their relationships with different functional units in the scheduler. We build a scheduler which addresses these performance problems in a coordinated way.
 
 \begin{figure}
 \centering
@@ -243,7 +243,9 @@ This section provides a case study, implementing our scheduling framework target
 \section{Conclusion}
 This paper presents a novel scheduling framework targeting multi-threaded multiprogrammed workloads on asymmetric multicore processors. This scheduler is the first to account for all three factors affecting AMP scheduling: core affinity, thread criticality, and scheduling fairness, using a general purpose asymmetry-aware scheduler.
 
-Over a representative selection of multi-programmed workloads, we achieve more than 10\% performance gain compared to Linux, and more than 5\% performance gain to a state-of-the-art heterogeneous-aware scheduler on average.
+Over a representative selection of multi-programmed workloads, 
+%we achieve more than 10\% performance gain compared to Linux, and more than 5\% performance gain to a state-of-the-art heterogeneous-aware scheduler on average.
+Our COLAB improves performance by up to 25\% and 21\% lower trunaround time, 11\% and 5\% on average with similar advantage on throughput, compared to Linux and a state-of-the-art heterogeneity-aware scheduler.
 
 %27\% on average on different hardware setups when compared to the Linux CFS scheduler and
 
